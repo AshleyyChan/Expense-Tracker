@@ -1,0 +1,15 @@
+# Frontend
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+
+# Backend
+backend/server/node_modules/
+backend/server/dist/
+
+# Env and system
+**/.env
+.DS_Store
+.vscode/
+logs
+*.log
