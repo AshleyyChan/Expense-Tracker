@@ -1,6 +1,5 @@
-// src/pages/OAuthHandler.js
 import { useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function OAuthHandler() {
   const navigate = useNavigate();
@@ -12,7 +11,6 @@ function OAuthHandler() {
 
     if (token) {
       localStorage.setItem('token', token);
-      window.history.replaceState({}, document.title, '/dashboard');
       navigate('/dashboard');
     } else {
       navigate('/login');
