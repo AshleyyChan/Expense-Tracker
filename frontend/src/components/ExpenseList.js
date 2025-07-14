@@ -3,7 +3,7 @@ import axios from 'axios';
 import { getToken, logout } from '../utils/auth';
 import { useNavigate } from 'react-router-dom';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
 
 function ExpenseList() {
@@ -16,6 +16,8 @@ function ExpenseList() {
     category: '',
     date: ''
   });
+  const [search, setSearch] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('All');
 
   const navigate = useNavigate();
 
@@ -26,7 +28,6 @@ function ExpenseList() {
       });
       setExpenses(res.data);
     } catch (err) {
-      console.error('❌ Fetch error:', err);
       setError('⚠️ Failed to fetch expenses');
       if (err.response?.status === 401) {
         logout();
@@ -47,8 +48,7 @@ function ExpenseList() {
       });
       setExpenses(prev => prev.filter(exp => exp._id !== id));
     } catch (err) {
-      console.error('❌ Delete error:', err);
-      setError(err.response?.data?.message || '❌ Failed to delete expense');
+      setError('❌ Failed to delete expense');
     }
   };
 
@@ -76,15 +76,24 @@ function ExpenseList() {
       });
       setExpenses(prev => prev.map(exp => exp._id === id ? res.data : exp));
       setEditingId(null);
-    } catch (err) {
-      console.error('❌ Update error:', err);
-      setError(err.response?.data?.message || '❌ Failed to update expense');
+    } catch {
+      setError('❌ Failed to update expense');
     }
   };
 
-  const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+  // Filtered & searched expenses
+  const filteredExpenses = expenses.filter((exp) => {
+    const matchesSearch = exp.title.toLowerCase().includes(search.toLowerCase()) ||
+                          exp.category.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = categoryFilter === 'All' || exp.category === categoryFilter;
+    return matchesSearch && matchesCategory;
+  });
 
-  const monthlyData = expenses.reduce((acc, exp) => {
+  const categories = [...new Set(expenses.map(exp => exp.category))];
+
+  const total = filteredExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+
+  const monthlyData = filteredExpenses.reduce((acc, exp) => {
     const month = new Date(exp.date).toLocaleString('default', {
       month: 'short',
       year: 'numeric'
@@ -97,32 +106,65 @@ function ExpenseList() {
     .sort((a, b) => new Date(`1 ${a[0]}`) - new Date(`1 ${b[0]}`))
     .map(([month, total]) => ({ month, total }));
 
+  const isToday = (date) => {
+    const today = new Date().toDateString();
+    return new Date(date).toDateString() === today;
+  };
+
   return (
     <div className="container py-5">
       <h2 className="mb-4">💰 Expense List</h2>
-      <h4 className="mb-4 text-primary">🧾 Total Expenses: ₹{total.toLocaleString()}</h4>
+      <h5 className="mb-3 text-primary">🧾 Total: ₹{total.toLocaleString()}</h5>
 
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && (
+        <div className="alert alert-danger alert-dismissible fade show" role="alert">
+          {error}
+          <button type="button" className="btn-close" onClick={() => setError('')}></button>
+        </div>
+      )}
 
-      {expenses.length === 0 ? (
-        <div className="alert alert-info">No expenses found.</div>
+      <div className="row mb-4">
+        <div className="col-md-6">
+          <input
+            className="form-control"
+            placeholder="🔍 Search title or category..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="col-md-6">
+          <select
+            className="form-select"
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+          >
+            <option value="All">All Categories</option>
+            {categories.map(cat => (
+              <option key={cat}>{cat}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {filteredExpenses.length === 0 ? (
+        <div className="alert alert-info">No matching expenses found.</div>
       ) : (
         <>
           <div className="table-responsive mb-4">
-            <table className="table table-bordered table-striped table-hover">
+            <table className="table table-hover table-bordered">
               <thead className="table-dark">
                 <tr>
                   <th>Title</th>
                   <th>Amount</th>
                   <th>Category</th>
                   <th>Date</th>
-                  <th>Action</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {expenses.map(exp => (
+                {filteredExpenses.map(exp => (
                   <React.Fragment key={exp._id}>
-                    <tr>
+                    <tr className={isToday(exp.date) ? 'table-success' : ''}>
                       <td>{exp.title}</td>
                       <td>₹{exp.amount}</td>
                       <td>{exp.category}</td>
@@ -150,27 +192,7 @@ function ExpenseList() {
             </table>
           </div>
 
-          <h4 className="mb-3">📅 Monthly Totals</h4>
-          <div className="table-responsive mb-4">
-            <table className="table table-bordered">
-              <thead className="table-secondary">
-                <tr>
-                  <th>Month</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {chartData.map(({ month, total }) => (
-                  <tr key={month}>
-                    <td>{month}</td>
-                    <td>₹{total.toLocaleString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <h4 className="mb-3">📊 Monthly Spending</h4>
+          <h4 className="mb-3">📊 Monthly Chart</h4>
           <div style={{ width: '100%', height: 300 }}>
             <ResponsiveContainer>
               <BarChart data={chartData}>
@@ -178,6 +200,7 @@ function ExpenseList() {
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip />
+                <Legend />
                 <Bar dataKey="total" fill="#0d6efd" />
               </BarChart>
             </ResponsiveContainer>

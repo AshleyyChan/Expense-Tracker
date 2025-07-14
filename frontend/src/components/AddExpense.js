@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 
 function AddExpense() {
@@ -11,9 +11,22 @@ function AddExpense() {
 
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const titleRef = useRef(null);
+
+  const categorySuggestions = ['Food', 'Travel', 'Groceries', 'Rent', 'Medical', 'Utilities'];
+
+  useEffect(() => {
+    titleRef.current?.focus();
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setSubmitted(false);
+  };
+
+  const handleSuggestionClick = (value) => {
+    setForm({ ...form, category: value });
   };
 
   const handleSubmit = async (e) => {
@@ -45,9 +58,9 @@ function AddExpense() {
         }
       );
       console.log('✅ Server response:', res.data);
-
       setMessage('✅ Expense added!');
       setForm({ title: '', amount: '', category: '', date: '' });
+      setSubmitted(true);
     } catch (err) {
       setMessage(err.response?.data?.message || '❌ Failed to add expense');
     } finally {
@@ -56,8 +69,8 @@ function AddExpense() {
   };
 
   return (
-    <div className="container mt-4">
-      <h2 className="mb-4">➕ Add Expense</h2>
+    <div className="container mt-5">
+      <h2 className="mb-4 text-center">➕ Add Expense</h2>
 
       {message && (
         <div
@@ -69,19 +82,21 @@ function AddExpense() {
 
       <form onSubmit={handleSubmit} className="card p-4 shadow-sm bg-light">
         <div className="mb-3">
-          <label className="form-label">Title</label>
+          <label className="form-label fw-semibold">Title</label>
           <input
             name="title"
             className="form-control"
             placeholder="e.g., Grocery"
             value={form.title}
             onChange={handleChange}
+            ref={titleRef}
             required
           />
+          {form.title && <span className="badge bg-primary mt-1">📝 {form.title}</span>}
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Amount (₹)</label>
+          <label className="form-label fw-semibold">Amount (₹)</label>
           <input
             name="amount"
             type="number"
@@ -91,10 +106,11 @@ function AddExpense() {
             onChange={handleChange}
             required
           />
+          {form.amount && <span className="badge bg-warning mt-1">₹{form.amount}</span>}
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Category</label>
+          <label className="form-label fw-semibold">Category</label>
           <input
             name="category"
             className="form-control"
@@ -103,10 +119,22 @@ function AddExpense() {
             onChange={handleChange}
             required
           />
+          <div className="mt-2">
+            {categorySuggestions.map(cat => (
+              <button
+                key={cat}
+                type="button"
+                className={`btn btn-sm me-2 mb-2 ${form.category === cat ? 'btn-primary' : 'btn-outline-secondary'}`}
+                onClick={() => handleSuggestionClick(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Date</label>
+          <label className="form-label fw-semibold">Date</label>
           <input
             name="date"
             type="date"
@@ -117,8 +145,12 @@ function AddExpense() {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? 'Submitting...' : '➕ Add Expense'}
+        <button
+          type="submit"
+          className={`btn ${submitted ? 'btn-success' : 'btn-primary'} btn-lg`}
+          disabled={loading}
+        >
+          {loading ? 'Submitting...' : submitted ? '✅ Submitted' : '➕ Add Expense'}
         </button>
       </form>
     </div>
