@@ -80,8 +80,10 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
 
-          {/* Protected Routes */}
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          {/* 🔓 Do NOT protect this route — it sets token from URL */}
+          <Route path="/dashboard" element={<Dashboard />} />
+
+          {/* ✅ Protected Routes */}
           <Route path="/add" element={<ProtectedRoute><AddExpense /></ProtectedRoute>} />
           <Route path="/list" element={<ProtectedRoute><ExpenseList /></ProtectedRoute>} />
         </Routes>
