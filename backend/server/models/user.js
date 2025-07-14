@@ -2,23 +2,13 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const UserSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
+  username: { type: String, required: true },
   email:    { type: String, required: true, unique: true },
-  password: {
-    type: String,
-    required: function () {
-      // Only require password if not signed in via Google
-      return !this.googleId;
-    }
-  },
-  googleId: {
-    type: String,
-    unique: true,
-    sparse: true // allows multiple null values
-  }
+  password: { type: String }, // ✅ Optional for Google users
+  googleId: { type: String, unique: true, sparse: true }, // ✅ For Google Auth users
 });
 
-// ✅ Hash password before saving (only if password is set)
+// ✅ Hash password only if it's present and modified
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password') || !this.password) return next();
   try {
