@@ -8,22 +8,18 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // ✅ Handle token from Google OAuth callback
+  // ✅ Handle Google OAuth token from URL
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const urlToken = params.get("token");
 
     if (urlToken) {
       localStorage.setItem("token", urlToken);
-
-      // Remove token from URL for clean look
       window.history.replaceState({}, document.title, "/dashboard");
       navigate("/dashboard");
     } else {
       const localToken = localStorage.getItem("token");
-      if (localToken) {
-        navigate("/dashboard");
-      }
+      if (localToken) navigate("/dashboard");
     }
   }, [navigate]);
 
@@ -40,9 +36,7 @@ function Login() {
       const res = await axios.post(
         "https://expense-tracker-mvx1.onrender.com/api/auth/login",
         form,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
+        { headers: { "Content-Type": "application/json" } }
       );
 
       localStorage.setItem("token", res.data.token);
@@ -67,13 +61,13 @@ function Login() {
       style={{ minHeight: "100vh" }}
     >
       <div className="text-center mb-4">
-        <h2>🔐 Login to Your Account</h2>
+        <h2 className="fw-bold text-primary">🔐 Login</h2>
         <p className="text-muted">Access your expenses securely</p>
       </div>
 
       <div
-        className="card p-4 shadow-lg w-100 bg-light"
-        style={{ maxWidth: "400px" }}
+        className="card p-4 shadow-lg bg-white w-100"
+        style={{ maxWidth: "420px", borderRadius: "12px" }}
       >
         {message && (
           <div
@@ -87,7 +81,7 @@ function Login() {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label">Email</label>
+            <label className="form-label fw-semibold">Email</label>
             <input
               name="email"
               type="email"
@@ -100,20 +94,12 @@ function Login() {
           </div>
 
           <div className="mb-3">
-            <label className="form-label d-flex justify-content-between">
-              Password
-              <Link
-                to="/forgot-password"
-                className="text-decoration-none small text-primary"
-              >
-                Forgot?
-              </Link>
-            </label>
+            <label className="form-label fw-semibold">Password</label>
             <input
               name="password"
               type="password"
               className="form-control"
-              placeholder="********"
+              placeholder="••••••••"
               value={form.password}
               onChange={handleChange}
               required
@@ -122,7 +108,7 @@ function Login() {
 
           <button
             type="submit"
-            className="btn btn-primary w-100"
+            className="btn btn-primary w-100 fw-semibold"
             disabled={loading}
           >
             {loading ? "Logging in..." : "Login"}
@@ -133,22 +119,17 @@ function Login() {
 
         <button
           onClick={handleGoogleLogin}
-          className="btn btn-outline-danger w-100"
+          className="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center"
         >
           <img
             src="https://logos-world.net/wp-content/uploads/2020/09/Google-Symbol.png"
-            alt="Google logo"
-            style={{
-              width: "20px",
-              height: "20px",
-              marginRight: "10px",
-              verticalAlign: "middle",
-            }}
+            alt="Google"
+            style={{ width: "20px", height: "20px", marginRight: "10px" }}
           />
-          Login with Google
+          Continue with Google
         </button>
 
-        <p className="mt-3 text-center">
+        <p className="mt-3 text-center text-muted">
           Don’t have an account?{" "}
           <Link to="/signup" className="text-decoration-none text-success">
             Sign up
