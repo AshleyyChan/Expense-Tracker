@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import googlelogo from "./assets/googlelogo.png";
 
 function Signup() {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
@@ -101,7 +100,8 @@ function Signup() {
 
         <button onClick={handleGoogleSignup} className="btn btn-outline-danger w-100">
           <img
-            src={googlelogo}
+            src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+
             alt="Google logo"
             style={{ width: "20px", marginRight: "10px", verticalAlign: "middle" }}
           />

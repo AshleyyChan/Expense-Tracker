@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import googlelogo from "./assets/googlelogo.png";
 
 function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -117,7 +116,7 @@ function Login() {
           className="btn btn-outline-danger w-100"
         >
           <img
-            src={googlelogo}
+            src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
             alt="Google logo"
             style={{
               width: "20px",
