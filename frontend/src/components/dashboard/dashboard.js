@@ -6,18 +6,18 @@ function Dashboard() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
+    const tokenFromURL = params.get('token');
+
+    if (tokenFromURL) {
+      localStorage.setItem('token', tokenFromURL);
+    }
+
+    const token = tokenFromURL || localStorage.getItem('token');
 
     if (token) {
-      localStorage.setItem('token', token);
-      navigate('/add'); // ✅ Redirect to a real dashboard route
+      navigate('/add'); // ✅ This is your dashboard page (Add Expense)
     } else {
-      const storedToken = localStorage.getItem('token');
-      if (storedToken) {
-        navigate('/add');
-      } else {
-        navigate('/login');
-      }
+      navigate('/login');
     }
   }, [navigate]);
 
