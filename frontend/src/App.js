@@ -16,7 +16,7 @@ import ExpenseList from './components/ExpenseList';
 import Dashboard from './components/dashboard/dashboard';
 import ProtectedRoute from './utils/ProtectedRoute';
 import { logout, isLoggedIn } from './utils/auth';
-import OAuthHandler from './pages/OAuthHandler';
+import OAuthHandler from '..backend/server/routes/OAuthHandler';
 
 function App() {
   const navigate = useNavigate();
