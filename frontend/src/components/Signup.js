@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 
 function Signup() {
-  const [form, setForm] = useState({ username: '', email: '', password: '' });
-  const [message, setMessage] = useState('');
+  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -13,41 +13,49 @@ function Signup() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        'https://expense-tracker-mvx1.onrender.com/api/auth/signup',
+        "https://expense-tracker-mvx1.onrender.com/api/auth/signup",
         form,
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
         }
       );
 
       const token = res.data.token;
-      localStorage.setItem('token', token); // ✅ Store token
-      setMessage('✅ Signup successful!');
-      console.log('🪪 JWT Token:', token);
+      localStorage.setItem("token", token); // ✅ Store token
+      setMessage("✅ Signup successful!");
+      console.log("🪪 JWT Token:", token);
 
       // ✅ Redirect to dashboard
       window.location.href = "/dashboard";
     } catch (err) {
-      console.error('❌ Signup error:', err.response?.data || err.message);
-      setMessage(err.response?.data?.message || '❌ Signup failed');
+      console.error("❌ Signup error:", err.response?.data || err.message);
+      setMessage(err.response?.data?.message || "❌ Signup failed");
     }
   };
 
   const handleGoogleSignup = () => {
     // ✅ Redirect to backend Google OAuth route
-    window.location.href = 'https://expense-tracker-mvx1.onrender.com/auth/google';
+    window.location.href =
+      "https://expense-tracker-mvx1.onrender.com/auth/google";
   };
 
   return (
-    <div className="container d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
+    <div
+      className="container d-flex flex-column align-items-center justify-content-center"
+      style={{ minHeight: "100vh" }}
+    >
       <div className="text-center mb-4">
         <h2>📝 Create Your Account</h2>
         <p className="text-muted">Sign up using email or Google</p>
       </div>
 
-      <div className="card shadow-lg p-4 w-100" style={{ maxWidth: '400px' }}>
+      <div className="card shadow-lg p-4 w-100" style={{ maxWidth: "400px" }}>
         {message && (
-          <div className={`alert ${message.startsWith('✅') ? 'alert-success' : 'alert-danger'}`}>
+          <div
+            className={`alert ${
+              message.startsWith("✅") ? "alert-success" : "alert-danger"
+            }`}
+          >
             {message}
           </div>
         )}
@@ -98,12 +106,18 @@ function Signup() {
 
         <hr className="my-4" />
 
-        <button onClick={handleGoogleSignup} className="btn btn-outline-danger w-100">
+        <button
+          onClick={handleGoogleSignup}
+          className="btn btn-outline-danger w-100"
+        >
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
-
             alt="Google logo"
-            style={{ width: "20px", marginRight: "10px", verticalAlign: "middle" }}
+            style={{
+              width: "20px",
+              marginRight: "10px",
+              verticalAlign: "middle",
+            }}
           />
           Sign Up with Google
         </button>
