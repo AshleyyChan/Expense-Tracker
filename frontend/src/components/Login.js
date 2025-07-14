@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -7,6 +7,13 @@ function Login() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/dashboard"); // Redirect if already logged in
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -27,7 +34,7 @@ function Login() {
       localStorage.setItem("token", res.data.token);
       setMessage("✅ Login successful!");
       console.log("🪪 Token:", res.data.token);
-      navigate("/dashboard");
+      navigate("/dashboard"); // ✅ Redirect to dashboard
     } catch (err) {
       console.error("❌ Login error:", err.response?.data || err.message);
       setMessage(err.response?.data?.message || "❌ Login failed");
@@ -120,6 +127,7 @@ function Login() {
             alt="Google logo"
             style={{
               width: "20px",
+              height: "20px",
               marginRight: "10px",
               verticalAlign: "middle",
             }}

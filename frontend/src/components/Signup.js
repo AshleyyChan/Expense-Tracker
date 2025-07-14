@@ -111,7 +111,7 @@ function Signup() {
           className="btn btn-outline-danger w-100"
         >
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+            src="https://logos-world.net/wp-content/uploads/2020/09/Google-Symbol.png"
             alt="Google logo"
             style={{
               width: "20px",
