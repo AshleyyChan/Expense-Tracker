@@ -28,7 +28,7 @@ function Login() {
       localStorage.setItem("token", res.data.token);
       setMessage("✅ Login successful!");
       console.log("🪪 Token:", res.data.token);
-      navigate("/list");
+      navigate("/dashboard");
     } catch (err) {
       console.error("❌ Login error:", err.response?.data || err.message);
       setMessage(err.response?.data?.message || "❌ Login failed");

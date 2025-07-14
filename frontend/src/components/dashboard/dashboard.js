@@ -5,21 +5,25 @@ function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get token from URL
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
 
     if (token) {
-      localStorage.setItem('token', token); // ✅ Save token
-      navigate('/add'); // ✅ Redirect to Add Expense
+      localStorage.setItem('token', token);
+      navigate('/home'); // ✅ Redirect to a real dashboard route
     } else {
-      navigate('/login'); // If no token, redirect to login
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        navigate('/home');
+      } else {
+        navigate('/login');
+      }
     }
   }, [navigate]);
 
   return (
     <div className="text-center mt-5">
-      <h4>Redirecting...</h4>
+      <h5>🔄 Redirecting to your dashboard...</h5>
     </div>
   );
 }

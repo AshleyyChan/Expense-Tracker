@@ -1,10 +1,17 @@
 // ✅ src/utils/ProtectedRoute.js
+
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { isLoggedIn } from './auth';
+import { isLoggedIn } from './auth'; // Checks if JWT token exists in localStorage
 
 function ProtectedRoute({ children }) {
-  return isLoggedIn() ? children : <Navigate to="/login" />;
+  // 🔐 If user is logged in, allow access
+  if (isLoggedIn()) {
+    return children;
+  }
+
+  // 🚫 If not logged in, redirect to login page
+  return <Navigate to="/login" replace />;
 }
 
-export default ProtectedRoute; // ✅ MUST BE default export
+export default ProtectedRoute;

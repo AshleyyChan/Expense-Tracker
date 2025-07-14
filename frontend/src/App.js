@@ -1,12 +1,20 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, useNavigate, useLocation } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Link,
+  useNavigate,
+  useLocation,
+  Navigate,
+} from 'react-router-dom';
+
 import Signup from './components/Signup';
 import Login from './components/Login';
 import AddExpense from './components/AddExpense';
 import ExpenseList from './components/ExpenseList';
-import ProtectedRoute from './utils/ProtectedRoute';
 import Dashboard from './components/dashboard/dashboard';
-
+import ProtectedRoute from './utils/ProtectedRoute';
 import { logout, isLoggedIn } from './utils/auth';
 
 function App() {
@@ -17,8 +25,6 @@ function App() {
     logout();
     navigate('/login');
   };
-  <Route path="/dashboard" element={<Dashboard />} />
-
 
   const isActive = (path) => location.pathname === path;
 
@@ -46,6 +52,9 @@ function App() {
               ) : (
                 <>
                   <li className="nav-item">
+                    <Link className={`nav-link ${isActive('/dashboard') ? 'active' : ''}`} to="/dashboard">Dashboard</Link>
+                  </li>
+                  <li className="nav-item">
                     <Link className={`nav-link ${isActive('/add') ? 'active' : ''}`} to="/add">Add Expense</Link>
                   </li>
                   <li className="nav-item">
@@ -64,8 +73,15 @@ function App() {
       {/* ✅ Page Container */}
       <div className="container mt-4 mb-5">
         <Routes>
+          {/* Default route - go to signup */}
+          <Route path="/" element={<Navigate to="/signup" />} />
+
+          {/* Auth Routes */}
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+
+          {/* Protected Routes */}
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/add" element={<ProtectedRoute><AddExpense /></ProtectedRoute>} />
           <Route path="/list" element={<ProtectedRoute><ExpenseList /></ProtectedRoute>} />
         </Routes>

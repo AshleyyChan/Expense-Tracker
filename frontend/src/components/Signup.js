@@ -6,20 +6,28 @@ function Signup() {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [message, setMessage] = useState('');
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('https://expense-tracker-mvx1.onrender.com/api/auth/signup', form, {
-        headers: { 'Content-Type': 'application/json' }
-      });
+      const res = await axios.post(
+        'https://expense-tracker-mvx1.onrender.com/api/auth/signup',
+        form,
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
 
+      const token = res.data.token;
+      localStorage.setItem('token', token); // ✅ Store token
       setMessage('✅ Signup successful!');
-      console.log('🪪 JWT Token:', res.data.token);
-      localStorage.setItem('token', res.data.token);
+      console.log('🪪 JWT Token:', token);
+
+      // ✅ Redirect to dashboard
+      window.location.href = "/dashboard";
     } catch (err) {
       console.error('❌ Signup error:', err.response?.data || err.message);
       setMessage(err.response?.data?.message || '❌ Signup failed');
@@ -27,6 +35,7 @@ function Signup() {
   };
 
   const handleGoogleSignup = () => {
+    // ✅ Redirect to backend Google OAuth route
     window.location.href = 'https://expense-tracker-mvx1.onrender.com/auth/google';
   };
 
@@ -92,14 +101,10 @@ function Signup() {
 
         <button onClick={handleGoogleSignup} className="btn btn-outline-danger w-100">
           <img
-                      src={googlelogo}
-                      alt="Google logo"
-                      style={{
-                        width: "20px",
-                        marginRight: "10px",
-                        verticalAlign: "middle",
-                      }}
-                    />
+            src={googlelogo}
+            alt="Google logo"
+            style={{ width: "20px", marginRight: "10px", verticalAlign: "middle" }}
+          />
           Sign Up with Google
         </button>
       </div>
