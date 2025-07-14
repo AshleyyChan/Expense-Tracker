@@ -5,6 +5,8 @@ import Login from './components/Login';
 import AddExpense from './components/AddExpense';
 import ExpenseList from './components/ExpenseList';
 import ProtectedRoute from './utils/ProtectedRoute';
+import Dashboard from './components/dashboard/dashboard';
+
 import { logout, isLoggedIn } from './utils/auth';
 
 function App() {
@@ -15,6 +17,8 @@ function App() {
     logout();
     navigate('/login');
   };
+  <Route path="/dashboard" element={<Dashboard />} />
+
 
   const isActive = (path) => location.pathname === path;
 
