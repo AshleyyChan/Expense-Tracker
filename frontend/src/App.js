@@ -26,7 +26,14 @@ function App() {
     logout();
     navigate('/login');
   };
-  <Route path="/auth/callback" element={<OAuthHandler />} />
+<Routes>
+  <Route path="/" element={<Navigate to="/signup" />} />
+  <Route path="/signup" element={<Signup />} />
+  <Route path="/login" element={<Login />} />
+  <Route path="/auth/callback" element={<OAuthHandler />} />  {/* ✅ Google redirect route */}
+  <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+  ...
+</Routes>
 
   const isActive = (path) => location.pathname === path;
 

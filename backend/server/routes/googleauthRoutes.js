@@ -24,6 +24,7 @@ router.get(
       // 🌐 Redirect to frontend with token as query param
       res.redirect(`https://expense-tracker-sage-one-34.vercel.app/auth/callback?token=${token}`);
 
+
     } catch (err) {
       console.error('❌ Google Auth Callback Error:', err);
       res.redirect('https://expense-tracker-sage-one-34.vercel.app/login?error=token_failed');

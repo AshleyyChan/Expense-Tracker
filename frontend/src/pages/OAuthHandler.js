@@ -1,13 +1,14 @@
+// src/pages/OAuthHandler.js
 import { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function OAuthHandler() {
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const token = params.get('token');
+    const queryParams = new URLSearchParams(location.search);
+    const token = queryParams.get('token');
 
     if (token) {
       localStorage.setItem('token', token);
@@ -15,13 +16,9 @@ function OAuthHandler() {
     } else {
       navigate('/login');
     }
-  }, [navigate, location]);
+  }, [location, navigate]);
 
-  return (
-    <div className="container text-center mt-5">
-      <h4>🔄 Logging you in with Google...</h4>
-    </div>
-  );
+  return null;
 }
 
 export default OAuthHandler;
