@@ -22,7 +22,8 @@ router.get(
       const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
       // 🌐 Redirect to frontend with token as query param
-      res.redirect(`https://expense-tracker-sage-one-34.vercel.app/dashboard?token=${token}`);
+      res.redirect(`https://expense-tracker-sage-one-34.vercel.app/auth/callback?token=${token}`);
+
     } catch (err) {
       console.error('❌ Google Auth Callback Error:', err);
       res.redirect('https://expense-tracker-sage-one-34.vercel.app/login?error=token_failed');

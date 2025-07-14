@@ -16,6 +16,7 @@ import ExpenseList from './components/ExpenseList';
 import Dashboard from './components/dashboard/dashboard';
 import ProtectedRoute from './utils/ProtectedRoute';
 import { logout, isLoggedIn } from './utils/auth';
+import OAuthHandler from './pages/OAuthHandler';
 
 function App() {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ function App() {
     logout();
     navigate('/login');
   };
+  <Route path="/auth/callback" element={<OAuthHandler />} />
 
   const isActive = (path) => location.pathname === path;
 
