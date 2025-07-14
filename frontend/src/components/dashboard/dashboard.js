@@ -10,11 +10,11 @@ function Dashboard() {
 
     if (token) {
       localStorage.setItem('token', token);
-      navigate('/home'); // ✅ Redirect to a real dashboard route
+      navigate('/add'); // ✅ Redirect to a real dashboard route
     } else {
       const storedToken = localStorage.getItem('token');
       if (storedToken) {
-        navigate('/home');
+        navigate('/add');
       } else {
         navigate('/login');
       }
