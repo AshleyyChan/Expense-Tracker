@@ -61,14 +61,11 @@ function Login() {
       style={{ minHeight: "100vh" }}
     >
       <div className="text-center mb-4">
-        <h2 className="fw-bold text-primary">🔐 Login</h2>
+        <h2>🔐 Login to Your Account</h2>
         <p className="text-muted">Access your expenses securely</p>
       </div>
 
-      <div
-        className="card p-4 shadow-lg bg-white w-100"
-        style={{ maxWidth: "420px", borderRadius: "12px" }}
-      >
+      <div className="card shadow-lg p-4 w-100" style={{ maxWidth: "400px" }}>
         {message && (
           <div
             className={`alert ${
@@ -81,7 +78,7 @@ function Login() {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label fw-semibold">Email</label>
+            <label className="form-label">Email</label>
             <input
               name="email"
               type="email"
@@ -94,12 +91,12 @@ function Login() {
           </div>
 
           <div className="mb-3">
-            <label className="form-label fw-semibold">Password</label>
+            <label className="form-label">Password</label>
             <input
               name="password"
               type="password"
               className="form-control"
-              placeholder="••••••••"
+              placeholder="********"
               value={form.password}
               onChange={handleChange}
               required
@@ -108,7 +105,7 @@ function Login() {
 
           <button
             type="submit"
-            className="btn btn-primary w-100 fw-semibold"
+            className="btn btn-primary w-100"
             disabled={loading}
           >
             {loading ? "Logging in..." : "Login"}
@@ -119,14 +116,18 @@ function Login() {
 
         <button
           onClick={handleGoogleLogin}
-          className="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center"
+          className="btn btn-outline-danger w-100"
         >
           <img
             src="https://logos-world.net/wp-content/uploads/2020/09/Google-Symbol.png"
-            alt="Google"
-            style={{ width: "20px", height: "20px", marginRight: "10px" }}
+            alt="Google logo"
+            style={{
+              width: "20px",
+              marginRight: "10px",
+              verticalAlign: "middle",
+            }}
           />
-          Continue with Google
+          Login with Google
         </button>
 
         <p className="mt-3 text-center text-muted">
