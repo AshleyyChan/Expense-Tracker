@@ -35,7 +35,7 @@ function AddExpense() {
 
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/expenses',
+        'https://expense-tracker-mvx1.onrender.com/api/expenses',
         payload,
         {
           headers: {

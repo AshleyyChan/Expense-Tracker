@@ -21,7 +21,7 @@ function ExpenseList() {
 
   const fetchExpenses = useCallback(async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/expenses', {
+      const res = await axios.get('https://expense-tracker-mvx1.onrender.com/api/expenses', {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       setExpenses(res.data);
@@ -42,7 +42,7 @@ function ExpenseList() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this expense?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/expenses/${id}`, {
+      await axios.delete(`https://expense-tracker-mvx1.onrender.com/api/expenses/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       setExpenses(prev => prev.filter(exp => exp._id !== id));
@@ -68,7 +68,7 @@ function ExpenseList() {
 
   const handleUpdate = async (id) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/expenses/${id}`, editForm, {
+      const res = await axios.put(`https://expense-tracker-mvx1.onrender.com/api/expenses/${id}`, editForm, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
           'Content-Type': 'application/json'
