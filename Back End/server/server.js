@@ -1,11 +1,16 @@
+// Load environment variables from .env
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 const cors = require('cors');
 
-dotenv.config();
+const app = express();
 
-const app = express(); // ✅ Define app first
+// ✅ Environment Variables
+const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI;
+const JWT_SECRET = process.env.JWT_SECRET; // Use this in auth logic
 
 // ✅ Middleware
 app.use(cors({
@@ -15,7 +20,7 @@ app.use(cors({
 app.use(express.json());
 
 // ✅ MongoDB Connection
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
@@ -24,10 +29,7 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // ✅ Routes
 app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/expenses', require('./routes/expenseRoutes'));// ✅ Moved here after app defined
-// server.js or expenseRoutes.js
-
-
+app.use('/api/expenses', require('./routes/expenseRoutes'));
 
 // ✅ Test route
 app.get('/', (req, res) => {
@@ -35,7 +37,6 @@ app.get('/', (req, res) => {
 });
 
 // ✅ Start server
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
