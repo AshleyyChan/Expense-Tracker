@@ -25,13 +25,18 @@ function Signup() {
     }
   };
 
-  return (
-    <div className="container d-flex flex-column align-items-center justify-content-center mt-5">
-      {/* Centered heading */}
-      <h2 className="mb-4 text-center">📝 Signup</h2>
+  const handleGoogleSignup = () => {
+    window.location.href = 'https://expense-tracker-mvx1.onrender.com/auth/google';
+  };
 
-      {/* Signup form card */}
-      <div className="card shadow-sm p-4 w-100" style={{ maxWidth: '400px' }}>
+  return (
+    <div className="container d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
+      <div className="text-center mb-4">
+        <h2>📝 Create Your Account</h2>
+        <p className="text-muted">Sign up using email or Google</p>
+      </div>
+
+      <div className="card shadow-lg p-4 w-100" style={{ maxWidth: '400px' }}>
         {message && (
           <div className={`alert ${message.startsWith('✅') ? 'alert-success' : 'alert-danger'}`}>
             {message}
@@ -78,9 +83,20 @@ function Signup() {
           </div>
 
           <button type="submit" className="btn btn-success w-100">
-            Signup
+            Sign Up with Email
           </button>
         </form>
+
+        <hr className="my-4" />
+
+        <button onClick={handleGoogleSignup} className="btn btn-outline-danger w-100">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+            alt="Google logo"
+            style={{ width: '20px', marginRight: '10px', verticalAlign: 'middle' }}
+          />
+          Sign Up with Google
+        </button>
       </div>
     </div>
   );

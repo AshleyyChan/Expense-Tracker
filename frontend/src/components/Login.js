@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -32,47 +32,75 @@ function Login() {
     }
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = 'https://expense-tracker-mvx1.onrender.com/auth/google';
+  };
+
   return (
-    <div className="container mt-4" style={{ maxWidth: '400px' }}>
-      <h2 className="mb-4">🔐 Login</h2>
+    <div className="container d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
+      <div className="text-center mb-4">
+        <h2>🔐 Login to Your Account</h2>
+        <p className="text-muted">Access your expenses securely</p>
+      </div>
 
-      {message && (
-        <div className={`alert ${message.startsWith('✅') ? 'alert-success' : 'alert-danger'}`}>
-          {message}
-        </div>
-      )}
+      <div className="card p-4 shadow-lg w-100 bg-light" style={{ maxWidth: '400px' }}>
+        {message && (
+          <div className={`alert ${message.startsWith('✅') ? 'alert-success' : 'alert-danger'}`}>
+            {message}
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit} className="card p-4 shadow-sm bg-light">
-        <div className="mb-3">
-          <label className="form-label">Email</label>
-          <input
-            name="email"
-            type="email"
-            className="form-control"
-            placeholder="you@example.com"
-            value={form.email}
-            onChange={handleChange}
-            required
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label">Email</label>
+            <input
+              name="email"
+              type="email"
+              className="form-control"
+              placeholder="you@example.com"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label d-flex justify-content-between">
+              Password
+              <Link to="/forgot-password" className="text-decoration-none small text-primary">Forgot?</Link>
+            </label>
+            <input
+              name="password"
+              type="password"
+              className="form-control"
+              placeholder="********"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+        </form>
+
+        <hr className="my-4" />
+
+        <button onClick={handleGoogleLogin} className="btn btn-outline-danger w-100">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+            alt="Google logo"
+            style={{ width: '20px', marginRight: '10px', verticalAlign: 'middle' }}
           />
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">Password</label>
-          <input
-            name="password"
-            type="password"
-            className="form-control"
-            placeholder="********"
-            value={form.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <button type="submit" className="btn btn-primary w-100" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
+          Login with Google
         </button>
-      </form>
+
+        <p className="mt-3 text-center">
+          Don’t have an account?{' '}
+          <Link to="/signup" className="text-decoration-none text-success">Sign up</Link>
+        </p>
+      </div>
     </div>
   );
 }
