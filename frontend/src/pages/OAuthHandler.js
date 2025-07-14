@@ -1,4 +1,3 @@
-// src/pages/OAuthHandler.js
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -7,8 +6,8 @@ function OAuthHandler() {
   const location = useLocation();
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const token = queryParams.get('token');
+    const params = new URLSearchParams(location.search);
+    const token = params.get('token');
 
     if (token) {
       localStorage.setItem('token', token);

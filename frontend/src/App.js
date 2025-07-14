@@ -26,14 +26,6 @@ function App() {
     logout();
     navigate('/login');
   };
-<Routes>
-  <Route path="/" element={<Navigate to="/signup" />} />
-  <Route path="/signup" element={<Signup />} />
-  <Route path="/login" element={<Login />} />
-  <Route path="/auth/callback" element={<OAuthHandler />} />  {/* ✅ Google redirect route */}
-  <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-  ...
-</Routes>
 
   const isActive = (path) => location.pathname === path;
 
@@ -89,10 +81,11 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
 
-          {/* 🔓 Do NOT protect this route — it sets token from URL */}
-          <Route path="/dashboard" element={<Dashboard />} />
+          {/* 🔓 This route handles Google token and redirects */}
+          <Route path="/auth/callback" element={<OAuthHandler />} />
 
-          {/* ✅ Protected Routes */}
+          {/* ✅ Protect dashboard too */}
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/add" element={<ProtectedRoute><AddExpense /></ProtectedRoute>} />
           <Route path="/list" element={<ProtectedRoute><ExpenseList /></ProtectedRoute>} />
         </Routes>
