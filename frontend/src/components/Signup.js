@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // ✅ Import navigate
 
 function Signup() {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [message, setMessage] = useState("");
+  const navigate = useNavigate(); // ✅ Initialize navigate
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -20,13 +22,12 @@ function Signup() {
         }
       );
 
-      const token = res.data.token;
-      localStorage.setItem("token", token); // ✅ Store token
       setMessage("✅ Signup successful!");
-      console.log("🪪 JWT Token:", token);
+      console.log("🪪 JWT Token:", res.data.token);
+      localStorage.setItem("token", res.data.token);
 
       // ✅ Redirect to dashboard
-      window.location.href = "/dashboard";
+      navigate("/dashboard");
     } catch (err) {
       console.error("❌ Signup error:", err.response?.data || err.message);
       setMessage(err.response?.data?.message || "❌ Signup failed");
@@ -34,7 +35,6 @@ function Signup() {
   };
 
   const handleGoogleSignup = () => {
-    // ✅ Redirect to backend Google OAuth route
     window.location.href =
       "https://expense-tracker-mvx1.onrender.com/auth/google";
   };
