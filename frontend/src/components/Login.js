@@ -8,16 +8,18 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // ✅ Handle token from Google OAuth callback
   useEffect(() => {
-    // ✅ Check if token exists in URL from Google OAuth
     const params = new URLSearchParams(window.location.search);
     const urlToken = params.get("token");
 
     if (urlToken) {
       localStorage.setItem("token", urlToken);
+
+      // Remove token from URL for clean look
+      window.history.replaceState({}, document.title, "/dashboard");
       navigate("/dashboard");
     } else {
-      // ✅ Already logged in with normal login
       const localToken = localStorage.getItem("token");
       if (localToken) {
         navigate("/dashboard");
@@ -31,8 +33,8 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setMessage("");
+    setLoading(true);
 
     try {
       const res = await axios.post(
@@ -45,7 +47,6 @@ function Login() {
 
       localStorage.setItem("token", res.data.token);
       setMessage("✅ Login successful!");
-      console.log("🪪 Token:", res.data.token);
       navigate("/dashboard");
     } catch (err) {
       console.error("❌ Login error:", err.response?.data || err.message);
@@ -56,7 +57,6 @@ function Login() {
   };
 
   const handleGoogleLogin = () => {
-    // ✅ Redirects to Google OAuth route
     window.location.href =
       "https://expense-tracker-mvx1.onrender.com/auth/google";
   };
