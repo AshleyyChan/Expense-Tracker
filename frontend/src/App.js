@@ -13,10 +13,7 @@ import OAuthHandler from './pages/OAuthHandler';
 function Layout({ children }) {
   return (
     <div>
-      {/* Use Navbar component */}
       <Navbar />
-
-      {/* Page content */}
       <div className="container mt-4 mb-5">{children}</div>
     </div>
   );
@@ -27,13 +24,18 @@ function Welcome() {
   return (
     <div
       className="text-center"
-      style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+      style={{
+        minHeight: '80vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }}
     >
       <h1 className="mb-4">💰 Welcome to Expense Tracker</h1>
       <p className="mb-4 text-muted">Track your expenses, visualize spending, and save smarter.</p>
       <div className="d-flex justify-content-center gap-3">
-        <Navigate to="/signup" replace />
-        <Navigate to="/login" replace />
+        <a className="btn btn-success btn-lg" href="/signup">Sign Up</a>
+        <a className="btn btn-primary btn-lg" href="/login">Login</a>
       </div>
     </div>
   );
@@ -57,7 +59,9 @@ export default function App() {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <Layout><Dashboard /></Layout>
+              <Layout>
+                <Dashboard />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -65,7 +69,9 @@ export default function App() {
           path="/add"
           element={
             <ProtectedRoute>
-              <Layout><AddExpense /></Layout>
+              <Layout>
+                <AddExpense />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -73,7 +79,9 @@ export default function App() {
           path="/list"
           element={
             <ProtectedRoute>
-              <Layout><ExpenseList /></Layout>
+              <Layout>
+                <ExpenseList />
+              </Layout>
             </ProtectedRoute>
           }
         />
