@@ -8,7 +8,6 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // ✅ Handle Google OAuth token from URL
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const urlToken = params.get("token");
@@ -57,15 +56,28 @@ function Login() {
 
   return (
     <div
-      className="container d-flex flex-column align-items-center justify-content-center"
-      style={{ minHeight: "100vh" }}
+      className="d-flex align-items-center justify-content-center"
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #667eea, #764ba2)",
+        fontFamily: "'Poppins', sans-serif",
+      }}
     >
-      <div className="text-center mb-4">
-        <h2>🔐 Login to Your Account</h2>
-        <p className="text-muted">Access your expenses securely</p>
-      </div>
+      <div
+        className="card p-5 shadow-lg"
+        style={{
+          maxWidth: "400px",
+          width: "100%",
+          borderRadius: "20px",
+          background: "rgba(255,255,255,0.95)",
+          animation: "fadeIn 1s ease",
+        }}
+      >
+        <div className="text-center mb-4">
+          <h2 style={{ fontWeight: "700", color: "#333" }}>Welcome Back</h2>
+          <p className="text-muted">Sign in to continue managing expenses</p>
+        </div>
 
-      <div className="card shadow-lg p-4 w-100" style={{ maxWidth: "400px" }}>
         {message && (
           <div
             className={`alert ${
@@ -78,65 +90,91 @@ function Login() {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label">Email</label>
             <input
               name="email"
               type="email"
-              className="form-control"
-              placeholder="you@example.com"
+              className="form-control form-control-lg"
+              placeholder="Email"
               value={form.email}
               onChange={handleChange}
               required
+              style={{ borderRadius: "10px" }}
             />
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Password</label>
             <input
               name="password"
               type="password"
-              className="form-control"
-              placeholder="********"
+              className="form-control form-control-lg"
+              placeholder="Password"
               value={form.password}
               onChange={handleChange}
               required
+              style={{ borderRadius: "10px" }}
             />
           </div>
 
           <button
             type="submit"
-            className="btn btn-primary w-100"
+            className="btn btn-gradient w-100 text-white"
             disabled={loading}
+            style={{
+              borderRadius: "10px",
+              padding: "10px 0",
+              background: "linear-gradient(90deg, #ff8a00, #e52e71)",
+              fontWeight: "600",
+              transition: "0.3s",
+            }}
           >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
-        <hr className="my-4" />
+        <div className="text-center my-3 text-muted">OR</div>
 
         <button
           onClick={handleGoogleLogin}
-          className="btn btn-outline-danger w-100"
+          className="btn w-100 d-flex align-items-center justify-content-center"
+          style={{
+            borderRadius: "10px",
+            border: "1px solid #ddd",
+            padding: "10px 0",
+            transition: "0.3s",
+            background: "#fff",
+          }}
         >
           <img
-            src="https://logos-world.net/wp-content/uploads/2020/09/Google-Symbol.png"
+            src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
             alt="Google logo"
             style={{
               width: "20px",
               marginRight: "10px",
-              verticalAlign: "middle",
             }}
           />
-          Login with Google
+          Sign in with Google
         </button>
 
         <p className="mt-3 text-center text-muted">
           Don’t have an account?{" "}
-          <Link to="/signup" className="text-decoration-none text-success">
-            Sign up
+          <Link to="/signup" className="text-decoration-none fw-bold text-primary">
+            Sign Up
           </Link>
         </p>
       </div>
+      <style>{`
+        @keyframes fadeIn {
+          0% { opacity: 0; transform: translateY(-20px);}
+          100% { opacity: 1; transform: translateY(0);}
+        }
+        .btn-gradient:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .btn:hover {
+          opacity: 0.9;
+        }
+      `}</style>
     </div>
   );
 }

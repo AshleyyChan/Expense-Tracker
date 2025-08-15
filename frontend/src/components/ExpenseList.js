@@ -10,15 +10,9 @@ function ExpenseList() {
   const [expenses, setExpenses] = useState([]);
   const [error, setError] = useState('');
   const [editingId, setEditingId] = useState(null);
-  const [editForm, setEditForm] = useState({
-    title: '',
-    amount: '',
-    category: '',
-    date: ''
-  });
+  const [editForm, setEditForm] = useState({ title: '', amount: '', category: '', date: '' });
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
-
   const navigate = useNavigate();
 
   const fetchExpenses = useCallback(async () => {
@@ -47,32 +41,22 @@ function ExpenseList() {
         headers: { Authorization: `Bearer ${getToken()}` }
       });
       setExpenses(prev => prev.filter(exp => exp._id !== id));
-    } catch (err) {
+    } catch {
       setError('❌ Failed to delete expense');
     }
   };
 
   const handleEdit = (exp) => {
     setEditingId(exp._id);
-    setEditForm({
-      title: exp.title,
-      amount: exp.amount,
-      category: exp.category,
-      date: exp.date.slice(0, 10)
-    });
+    setEditForm({ title: exp.title, amount: exp.amount, category: exp.category, date: exp.date.slice(0, 10) });
   };
 
-  const handleEditChange = (e) => {
-    setEditForm({ ...editForm, [e.target.name]: e.target.value });
-  };
+  const handleEditChange = (e) => setEditForm({ ...editForm, [e.target.name]: e.target.value });
 
   const handleUpdate = async (id) => {
     try {
       const res = await axios.put(`https://expense-tracker-mvx1.onrender.com/api/expenses/${id}`, editForm, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-          'Content-Type': 'application/json'
-        }
+        headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' }
       });
       setExpenses(prev => prev.map(exp => exp._id === id ? res.data : exp));
       setEditingId(null);
@@ -81,8 +65,7 @@ function ExpenseList() {
     }
   };
 
-  // Filtered & searched expenses
-  const filteredExpenses = expenses.filter((exp) => {
+  const filteredExpenses = expenses.filter(exp => {
     const matchesSearch = exp.title.toLowerCase().includes(search.toLowerCase()) ||
                           exp.category.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = categoryFilter === 'All' || exp.category === categoryFilter;
@@ -90,14 +73,10 @@ function ExpenseList() {
   });
 
   const categories = [...new Set(expenses.map(exp => exp.category))];
-
   const total = filteredExpenses.reduce((sum, exp) => sum + exp.amount, 0);
 
   const monthlyData = filteredExpenses.reduce((acc, exp) => {
-    const month = new Date(exp.date).toLocaleString('default', {
-      month: 'short',
-      year: 'numeric'
-    });
+    const month = new Date(exp.date).toLocaleString('default', { month: 'short', year: 'numeric' });
     acc[month] = (acc[month] || 0) + exp.amount;
     return acc;
   }, {});
@@ -106,52 +85,45 @@ function ExpenseList() {
     .sort((a, b) => new Date(`1 ${a[0]}`) - new Date(`1 ${b[0]}`))
     .map(([month, total]) => ({ month, total }));
 
-  const isToday = (date) => {
-    const today = new Date().toDateString();
-    return new Date(date).toDateString() === today;
-  };
+  const isToday = (date) => new Date(date).toDateString() === new Date().toDateString();
 
   return (
-    <div className="container py-5">
-      <h2 className="mb-4">💰 Expense List</h2>
-      <h5 className="mb-3 text-primary">🧾 Total: ₹{total.toLocaleString()}</h5>
+    <div className="container py-5" style={{ fontFamily: "'Poppins', sans-serif" }}>
+      <h2 className="mb-4 text-center text-primary">💰 My Expenses</h2>
+      <h5 className="mb-4 text-center text-success">🧾 Total: ₹{total.toLocaleString()}</h5>
 
-      {error && (
-        <div className="alert alert-danger alert-dismissible fade show" role="alert">
-          {error}
-          <button type="button" className="btn-close" onClick={() => setError('')}></button>
-        </div>
-      )}
+      {error && <div className="alert alert-danger alert-dismissible fade show" role="alert">
+        {error}
+        <button type="button" className="btn-close" onClick={() => setError('')}></button>
+      </div>}
 
       <div className="row mb-4">
-        <div className="col-md-6">
+        <div className="col-md-6 mb-2">
           <input
-            className="form-control"
+            className="form-control form-control-lg rounded-pill border-primary"
             placeholder="🔍 Search title or category..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <div className="col-md-6">
+        <div className="col-md-6 mb-2">
           <select
-            className="form-select"
+            className="form-select form-select-lg rounded-pill border-primary"
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
           >
             <option value="All">All Categories</option>
-            {categories.map(cat => (
-              <option key={cat}>{cat}</option>
-            ))}
+            {categories.map(cat => <option key={cat}>{cat}</option>)}
           </select>
         </div>
       </div>
 
       {filteredExpenses.length === 0 ? (
-        <div className="alert alert-info">No matching expenses found.</div>
+        <div className="alert alert-info text-center">No matching expenses found.</div>
       ) : (
-        <>
-          <div className="table-responsive mb-4">
-            <table className="table table-hover table-bordered">
+        <div className="card shadow-sm p-3 mb-4">
+          <div className="table-responsive">
+            <table className="table table-hover align-middle">
               <thead className="table-dark">
                 <tr>
                   <th>Title</th>
@@ -164,7 +136,7 @@ function ExpenseList() {
               <tbody>
                 {filteredExpenses.map(exp => (
                   <React.Fragment key={exp._id}>
-                    <tr className={isToday(exp.date) ? 'table-success' : ''}>
+                    <tr className={isToday(exp.date) ? 'table-success fw-bold animate__animated animate__pulse' : ''}>
                       <td>{exp.title}</td>
                       <td>₹{exp.amount}</td>
                       <td>{exp.category}</td>
@@ -175,7 +147,7 @@ function ExpenseList() {
                       </td>
                     </tr>
                     {editingId === exp._id && (
-                      <tr>
+                      <tr className="bg-light">
                         <td><input className="form-control" name="title" value={editForm.title} onChange={handleEditChange} /></td>
                         <td><input className="form-control" type="number" name="amount" value={editForm.amount} onChange={handleEditChange} /></td>
                         <td><input className="form-control" name="category" value={editForm.category} onChange={handleEditChange} /></td>
@@ -191,22 +163,30 @@ function ExpenseList() {
               </tbody>
             </table>
           </div>
-
-          <h4 className="mb-3">📊 Monthly Chart</h4>
-          <div style={{ width: '100%', height: 300 }}>
-            <ResponsiveContainer>
-              <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="total" fill="#0d6efd" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </>
+        </div>
       )}
+
+      <div className="card shadow-sm p-3">
+        <h4 className="mb-3 text-center text-primary">📊 Monthly Expenses</h4>
+        <div style={{ width: '100%', height: 350 }}>
+          <ResponsiveContainer>
+            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="total" fill="url(#colorUv)" radius={[10,10,0,0]} />
+              <defs>
+                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#0d6efd" stopOpacity={0.8}/>
+                  <stop offset="100%" stopColor="#0d6efd" stopOpacity={0.2}/>
+                </linearGradient>
+              </defs>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
     </div>
   );
 }
