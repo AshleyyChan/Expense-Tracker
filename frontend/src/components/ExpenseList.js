@@ -30,9 +30,7 @@ function ExpenseList() {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    fetchExpenses();
-  }, [fetchExpenses]);
+  useEffect(() => { fetchExpenses(); }, [fetchExpenses]);
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this expense?')) return;
@@ -48,7 +46,7 @@ function ExpenseList() {
 
   const handleEdit = (exp) => {
     setEditingId(exp._id);
-    setEditForm({ title: exp.title, amount: exp.amount, category: exp.category, date: exp.date.slice(0, 10) });
+    setEditForm({ title: exp.title, amount: exp.amount, category: exp.category, date: exp.date.slice(0,10) });
   };
 
   const handleEditChange = (e) => setEditForm({ ...editForm, [e.target.name]: e.target.value });
@@ -88,9 +86,9 @@ function ExpenseList() {
   const isToday = (date) => new Date(date).toDateString() === new Date().toDateString();
 
   return (
-    <div className="container py-5" style={{ fontFamily: "'Poppins', sans-serif" }}>
-      <h2 className="mb-4 text-center text-primary">💰 My Expenses</h2>
-      <h5 className="mb-4 text-center text-success">🧾 Total: ₹{total.toLocaleString()}</h5>
+    <div className="container py-5" style={{ fontFamily: "'Poppins', sans-serif", minHeight: '100vh', background: 'linear-gradient(135deg,#f0f8ff,#e6f7ff)' }}>
+      <h2 className="text-center text-primary mb-3">💰 My Expenses</h2>
+      <h5 className="text-center text-success mb-4">🧾 Total: ₹{total.toLocaleString()}</h5>
 
       {error && <div className="alert alert-danger alert-dismissible fade show" role="alert">
         {error}
@@ -99,19 +97,10 @@ function ExpenseList() {
 
       <div className="row mb-4">
         <div className="col-md-6 mb-2">
-          <input
-            className="form-control form-control-lg rounded-pill border-primary"
-            placeholder="🔍 Search title or category..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+          <input className="form-control form-control-lg rounded-pill border-primary shadow-sm" placeholder="🔍 Search title or category..." value={search} onChange={e => setSearch(e.target.value)} />
         </div>
         <div className="col-md-6 mb-2">
-          <select
-            className="form-select form-select-lg rounded-pill border-primary"
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-          >
+          <select className="form-select form-select-lg rounded-pill border-primary shadow-sm" value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)}>
             <option value="All">All Categories</option>
             {categories.map(cat => <option key={cat}>{cat}</option>)}
           </select>
@@ -121,10 +110,10 @@ function ExpenseList() {
       {filteredExpenses.length === 0 ? (
         <div className="alert alert-info text-center">No matching expenses found.</div>
       ) : (
-        <div className="card shadow-sm p-3 mb-4">
+        <div className="card glass-card shadow-sm p-3 mb-4">
           <div className="table-responsive">
-            <table className="table table-hover align-middle">
-              <thead className="table-dark">
+            <table className="table table-hover align-middle text-white">
+              <thead style={{background: 'rgba(13,110,253,0.9)', borderRadius: '12px'}}>
                 <tr>
                   <th>Title</th>
                   <th>Amount</th>
@@ -166,9 +155,9 @@ function ExpenseList() {
         </div>
       )}
 
-      <div className="card shadow-sm p-3">
-        <h4 className="mb-3 text-center text-primary">📊 Monthly Expenses</h4>
-        <div style={{ width: '100%', height: 350 }}>
+      <div className="card glass-card shadow-sm p-3">
+        <h4 className="text-center text-primary mb-3">📊 Monthly Expenses</h4>
+        <div style={{ width: '100%', height: 400 }}>
           <ResponsiveContainer>
             <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -187,6 +176,19 @@ function ExpenseList() {
           </ResponsiveContainer>
         </div>
       </div>
+
+      <style>{`
+        .glass-card {
+          border-radius: 20px;
+          backdrop-filter: blur(12px);
+          background: rgba(255,255,255,0.15);
+          border: 1px solid rgba(255,255,255,0.3);
+          color: #fff;
+        }
+        .table-hover tbody tr:hover {
+          background-color: rgba(255,255,255,0.1);
+        }
+      `}</style>
     </div>
   );
 }

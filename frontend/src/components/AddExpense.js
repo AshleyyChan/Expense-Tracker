@@ -13,20 +13,24 @@ function AddExpense() {
   useEffect(() => { titleRef.current?.focus(); }, []);
 
   const handleChange = (e) => { setForm({ ...form, [e.target.name]: e.target.value }); setSubmitted(false); };
-
   const handleSuggestionClick = (value) => { setForm({ ...form, category: value }); };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
     setLoading(true);
+
     const token = localStorage.getItem('token');
-    if (!token) { setMessage('❌ You must be logged in to add expenses'); setLoading(false); return; }
+    if (!token) {
+      setMessage('❌ You must be logged in to add expenses');
+      setLoading(false);
+      return;
+    }
 
     const payload = { ...form, amount: parseFloat(form.amount) };
 
     try {
-      const res = await axios.post('https://expense-tracker-mvx1.onrender.com/api/expenses', payload, {
+      await axios.post('https://expense-tracker-mvx1.onrender.com/api/expenses', payload, {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
       });
       setMessage('✅ Expense added!');
@@ -34,7 +38,9 @@ function AddExpense() {
       setSubmitted(true);
     } catch (err) {
       setMessage(err.response?.data?.message || '❌ Failed to add expense');
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -43,12 +49,12 @@ function AddExpense() {
 
       {message && <div className={`alert ${message.startsWith('✅') ? 'alert-success' : 'alert-danger'} text-center`}>{message}</div>}
 
-      <form onSubmit={handleSubmit} className="card shadow-lg p-4 mx-auto" style={{ maxWidth: '500px', borderRadius: '1rem', background: '#ffffffcc' }}>
+      <form onSubmit={handleSubmit} className="card glass-card shadow-lg p-4 mx-auto" style={{ maxWidth: '500px', borderRadius: '1.5rem' }}>
         {/* Title */}
         <div className="mb-3">
           <label className="form-label fw-semibold">Title</label>
           <input
-            name="title" className="form-control form-control-lg rounded-pill border-primary"
+            name="title" className="form-control form-control-lg rounded-pill border-primary shadow-sm"
             placeholder="e.g., Grocery" value={form.title} onChange={handleChange} ref={titleRef} required
           />
           {form.title && <span className="badge bg-primary mt-2">📝 {form.title}</span>}
@@ -58,7 +64,7 @@ function AddExpense() {
         <div className="mb-3">
           <label className="form-label fw-semibold">Amount (₹)</label>
           <input
-            name="amount" type="number" className="form-control form-control-lg rounded-pill border-warning"
+            name="amount" type="number" className="form-control form-control-lg rounded-pill border-warning shadow-sm"
             placeholder="e.g., 500" value={form.amount} onChange={handleChange} required
           />
           {form.amount && <span className="badge bg-warning mt-2">₹{form.amount}</span>}
@@ -68,7 +74,7 @@ function AddExpense() {
         <div className="mb-3">
           <label className="form-label fw-semibold">Category</label>
           <input
-            name="category" className="form-control form-control-lg rounded-pill border-info"
+            name="category" className="form-control form-control-lg rounded-pill border-info shadow-sm"
             placeholder="e.g., Food, Rent, Travel" value={form.category} onChange={handleChange} required
           />
           <div className="mt-2">
@@ -87,18 +93,37 @@ function AddExpense() {
         {/* Date */}
         <div className="mb-4">
           <label className="form-label fw-semibold">Date</label>
-          <input name="date" type="date" className="form-control form-control-lg rounded-pill border-success" value={form.date} onChange={handleChange} required />
+          <input name="date" type="date" className="form-control form-control-lg rounded-pill border-success shadow-sm" value={form.date} onChange={handleChange} required />
         </div>
 
         {/* Submit */}
         <button
           type="submit"
-          className={`btn btn-lg w-100 ${submitted ? 'btn-success' : 'btn-primary'} ${loading ? 'btn-loading' : ''}`}
+          className={`btn btn-lg w-100 ${submitted ? 'btn-success' : 'btn-primary'} btn-gradient`}
           disabled={loading}
         >
           {loading ? '⏳ Submitting...' : submitted ? '✅ Submitted' : '➕ Add Expense'}
         </button>
       </form>
+
+      <style>{`
+        .glass-card {
+          border-radius: 20px;
+          backdrop-filter: blur(12px);
+          background: rgba(255,255,255,0.15);
+          border: 1px solid rgba(255,255,255,0.3);
+        }
+        .btn-gradient {
+          background: linear-gradient(90deg, #ff8a00, #e52e71);
+          color: white;
+          font-weight: 600;
+          transition: 0.3s;
+        }
+        .btn-gradient:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+      `}</style>
     </div>
   );
 }

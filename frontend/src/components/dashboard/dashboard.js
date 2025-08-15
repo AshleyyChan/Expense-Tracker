@@ -60,21 +60,21 @@ function Dashboard() {
 
       <div className="row mb-4">
         <div className="col-md-6 mb-3">
-          <div className="card shadow-lg p-4 h-100" style={{ borderRadius: '1rem', background: '#ffffffcc' }}>
+          <div className="glass-card shadow-lg p-4 h-100">
             <h4 className="text-success">💰 Total Expenses</h4>
             <p className="fs-3 fw-bold">₹{total.toLocaleString()}</p>
           </div>
         </div>
 
         <div className="col-md-6 mb-3">
-          <div className="card shadow-lg p-4 h-100" style={{ borderRadius: '1rem', background: '#ffffffcc' }}>
+          <div className="glass-card shadow-lg p-4 h-100">
             <h4 className="text-info">💡 Smart Insight</h4>
             <p className="fs-5">You spent <strong>₹{average}</strong> on average per month.</p>
           </div>
         </div>
       </div>
 
-      <div className="card shadow-lg p-4 mb-4" style={{ borderRadius: '1rem', background: '#ffffffcc' }}>
+      <div className="glass-card shadow-lg p-4 mb-4">
         <h5 className="mb-3 text-primary">📆 Monthly Expense Chart</h5>
         <div style={{ width: '100%', height: 350 }}>
           <ResponsiveContainer>
@@ -85,25 +85,33 @@ function Dashboard() {
               <Tooltip
                 contentStyle={{ borderRadius: '0.5rem', backgroundColor: '#f8f9fa', border: 'none' }}
               />
-              <Bar dataKey="total" fill="url(#colorUv)" radius={[5,5,0,0]} />
+              <Bar dataKey="total" fill="url(#colorUv)" radius={[10, 10, 0, 0]} />
+              <defs>
+                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#0d6efd" stopOpacity={0.8}/>
+                  <stop offset="100%" stopColor="#0d6efd" stopOpacity={0.2}/>
+                </linearGradient>
+              </defs>
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
       {quote && (
-        <div
-          className="card shadow-lg p-4 text-center"
-          style={{
-            borderRadius: '1rem',
-            background: 'linear-gradient(90deg, #ffe0b2, #fff3e0)',
-            fontStyle: 'italic',
-          }}
-        >
+        <div className="glass-card shadow-lg p-4 text-center" style={{ fontStyle: 'italic', background: 'rgba(255, 248, 220,0.5)' }}>
           <h5 className="text-secondary">🧠 Quote of the Day</h5>
           <p className="mt-2 mb-0">"{quote}"</p>
         </div>
       )}
+
+      <style>{`
+        .glass-card {
+          border-radius: 20px;
+          backdrop-filter: blur(12px);
+          background: rgba(255,255,255,0.15);
+          border: 1px solid rgba(255,255,255,0.3);
+        }
+      `}</style>
     </div>
   );
 }
