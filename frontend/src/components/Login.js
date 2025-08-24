@@ -1,25 +1,16 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 
-function Login() {
+export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Auto-redirect if token exists
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const urlToken = params.get("token");
-
-    if (urlToken) {
-      localStorage.setItem("token", urlToken);
-      window.history.replaceState({}, document.title, "/dashboard");
-      navigate("/dashboard");
-    } else {
-      const localToken = localStorage.getItem("token");
-      if (localToken) navigate("/dashboard");
-    }
+    const token = localStorage.getItem("token");
+    if (token) navigate("/dashboard");
   }, [navigate]);
 
   const handleChange = (e) => {
@@ -32,18 +23,32 @@ function Login() {
     setLoading(true);
 
     try {
-      const res = await axios.post(
+      const res = await fetch(
         "https://expense-tracker-mvx1.onrender.com/api/auth/login",
-        form,
-        { headers: { "Content-Type": "application/json" } }
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        }
       );
 
-      localStorage.setItem("token", res.data.token);
-      setMessage("✅ Login successful!");
-      navigate("/dashboard");
+      const data = await res.json();
+
+      if (res.ok) {
+        // ✅ Save token
+        localStorage.setItem("token", data.token);
+
+        // ✅ Broadcast auth change so Navbar/ProtectedRoute update instantly
+        window.dispatchEvent(new Event("storage"));
+
+        setMessage("✅ Login successful!");
+        navigate("/dashboard", { replace: true });
+      } else {
+        setMessage(`❌ ${data.message}`);
+      }
     } catch (err) {
-      console.error("❌ Login error:", err.response?.data || err.message);
-      setMessage(err.response?.data?.message || "❌ Login failed");
+      console.error(err);
+      setMessage("❌ Login failed");
     } finally {
       setLoading(false);
     }
@@ -56,15 +61,18 @@ function Login() {
 
   return (
     <div
-      className="d-flex align-items-center justify-content-center"
       style={{
+        fontFamily: "'Poppins', sans-serif",
         minHeight: "100vh",
         background: "linear-gradient(135deg, #667eea, #764ba2)",
-        fontFamily: "'Poppins', sans-serif",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "20px",
       }}
     >
       <div
-        className="glass-card p-5 shadow-lg"
+        className="shadow-lg"
         style={{
           maxWidth: "420px",
           width: "100%",
@@ -72,53 +80,55 @@ function Login() {
           backdropFilter: "blur(12px)",
           background: "rgba(255,255,255,0.15)",
           border: "1px solid rgba(255,255,255,0.3)",
+          padding: "40px",
           animation: "fadeInUp 1s ease",
         }}
       >
         <div className="text-center mb-4">
-          <h2 className="fw-bold text-white" style={{ textShadow: "1px 1px 8px rgba(0,0,0,0.3)" }}>
+          <h2
+            className="fw-bold text-white"
+            style={{ textShadow: "1px 1px 8px rgba(0,0,0,0.3)" }}
+          >
             Welcome Back
           </h2>
-          <p className="text-white-50">Sign in to continue managing expenses</p>
+          <p className="text-white-50">
+            Sign in to continue managing expenses
+          </p>
         </div>
 
         {message && (
           <div
-            className={`alert ${message.startsWith("✅") ? "alert-success" : "alert-danger"}`}
-            style={{ borderRadius: "10px", textAlign: "center" }}
+            className={`alert ${
+              message.startsWith("✅") ? "alert-success" : "alert-danger"
+            }`}
           >
             {message}
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <input
-              name="email"
-              type="email"
-              className="form-control form-control-lg glass-input"
-              placeholder="Email"
-              value={form.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="mb-3">
-            <input
-              name="password"
-              type="password"
-              className="form-control form-control-lg glass-input"
-              placeholder="Password"
-              value={form.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
+          <input
+            type="email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            className="glass-input"
+            placeholder="Email"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            value={form.password}
+            onChange={handleChange}
+            className="glass-input"
+            placeholder="Password"
+            required
+          />
           <button
             type="submit"
-            className="btn btn-gradient w-100 text-white fw-bold"
+            className="btn-gradient"
+            style={{ marginBottom: "10px" }}
             disabled={loading}
           >
             {loading ? "⏳ Logging in..." : "Login"}
@@ -129,19 +139,23 @@ function Login() {
 
         <button
           onClick={handleGoogleLogin}
-          className="btn btn-google w-100 d-flex align-items-center justify-content-center fw-bold"
+          className="btn-google fw-bold"
+          style={{ marginBottom: "10px" }}
         >
           <img
             src="https://img.icons8.com/color/20/google-logo.png"
             alt="google"
-            className="me-2"
+            style={{ marginRight: "8px" }}
           />
           Sign in with Google
         </button>
 
         <p className="mt-3 text-center text-white-50">
           Don’t have an account?{" "}
-          <Link to="/signup" className="text-decoration-none fw-bold text-warning">
+          <Link
+            to="/signup"
+            className="text-decoration-none fw-bold text-warning"
+          >
             Sign Up
           </Link>
         </p>
@@ -161,6 +175,8 @@ function Login() {
           color: #fff;
           backdrop-filter: blur(8px);
           transition: all 0.3s ease;
+          width: 100%;
+          margin-bottom: 15px;
         }
 
         .glass-input:focus {
@@ -174,6 +190,8 @@ function Login() {
           padding: 12px 0;
           background: linear-gradient(90deg, #ff8a00, #e52e71);
           font-weight: 600;
+          width: 100%;
+          color: #fff;
           transition: 0.3s;
         }
         .btn-gradient:hover {
@@ -187,10 +205,11 @@ function Login() {
           background: rgba(255,255,255,0.2);
           color: #fff;
           padding: 10px 0;
-          transition: 0.3s;
+          width: 100%;
           display: flex;
           align-items: center;
           justify-content: center;
+          transition: 0.3s;
         }
         .btn-google:hover {
           background: rgba(255,255,255,0.35);
@@ -199,9 +218,8 @@ function Login() {
         }
 
         .text-white-50 { color: rgba(255,255,255,0.7); }
+        .alert { border-radius: 10px; text-align: center; margin-bottom: 15px; }
       `}</style>
     </div>
   );
 }
-
-export default Login;

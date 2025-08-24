@@ -1,19 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function OAuthHandler() {
+  const navigate = useNavigate();
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
+    const token = urlParams.get("token");
 
     if (token) {
-      localStorage.setItem('token', token);
+      // ✅ Save token to localStorage
+      localStorage.setItem("token", token);
 
-      // ✅ Hard reload to reset React Router + token logic
-      window.location.href = '/dashboard';
+      // ✅ Let App.js know token changed (Navbar updates immediately)
+      window.dispatchEvent(new Event("storage"));
+
+      // ✅ Redirect using React Router (no full reload)
+      navigate("/dashboard", { replace: true });
     } else {
-      window.location.href = '/login';
+      navigate("/login", { replace: true });
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="text-center mt-5">

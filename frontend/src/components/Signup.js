@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
-function Signup() {
+export default function Signup() {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,11 +22,17 @@ function Signup() {
         form,
         { headers: { "Content-Type": "application/json" } }
       );
+
+      // ✅ Save token
       localStorage.setItem("token", res.data.token);
+
+      // ✅ Broadcast auth change so Navbar/ProtectedRoute update instantly
+      window.dispatchEvent(new Event("storage"));
+
       setMessage("✅ Signup successful!");
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     } catch (err) {
-      console.error("❌ Signup error:", err.response?.data || err.message);
+      console.error(err);
       setMessage(err.response?.data?.message || "❌ Signup failed");
     } finally {
       setLoading(false);
@@ -39,15 +46,18 @@ function Signup() {
 
   return (
     <div
-      className="d-flex align-items-center justify-content-center"
       style={{
+        fontFamily: "'Poppins', sans-serif",
         minHeight: "100vh",
         background: "linear-gradient(135deg, #667eea, #764ba2)",
-        fontFamily: "'Poppins', sans-serif",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "20px",
       }}
     >
       <div
-        className="glass-card p-5 shadow-lg"
+        className="shadow-lg"
         style={{
           maxWidth: "420px",
           width: "100%",
@@ -55,11 +65,15 @@ function Signup() {
           backdropFilter: "blur(12px)",
           background: "rgba(255,255,255,0.15)",
           border: "1px solid rgba(255,255,255,0.3)",
+          padding: "40px",
           animation: "fadeInUp 1s ease",
         }}
       >
         <div className="text-center mb-4">
-          <h2 className="fw-bold text-white" style={{ textShadow: "1px 1px 8px rgba(0,0,0,0.3)" }}>
+          <h2
+            className="fw-bold text-white"
+            style={{ textShadow: "1px 1px 8px rgba(0,0,0,0.3)" }}
+          >
             Create Account
           </h2>
           <p className="text-white-50">Sign up with email or Google</p>
@@ -67,8 +81,9 @@ function Signup() {
 
         {message && (
           <div
-            className={`alert ${message.startsWith("✅") ? "alert-success" : "alert-danger"}`}
-            style={{ borderRadius: "10px", textAlign: "center" }}
+            className={`alert ${
+              message.startsWith("✅") ? "alert-success" : "alert-danger"
+            }`}
           >
             {message}
           </div>
@@ -76,36 +91,37 @@ function Signup() {
 
         <form onSubmit={handleSubmit}>
           <input
+            type="text"
             name="username"
-            className="form-control form-control-lg glass-input mb-3"
             placeholder="Username"
             value={form.username}
             onChange={handleChange}
+            className="glass-input"
             required
           />
           <input
-            name="email"
             type="email"
-            className="form-control form-control-lg glass-input mb-3"
+            name="email"
             placeholder="Email"
             value={form.email}
             onChange={handleChange}
+            className="glass-input"
             required
           />
           <input
-            name="password"
             type="password"
-            className="form-control form-control-lg glass-input mb-3"
+            name="password"
             placeholder="Password"
             value={form.password}
             onChange={handleChange}
+            className="glass-input"
             required
           />
-
           <button
             type="submit"
-            className="btn btn-gradient w-100 mb-3 text-white fw-bold"
+            className="btn-gradient"
             disabled={loading}
+            style={{ marginBottom: "10px" }}
           >
             {loading ? "⏳ Signing up..." : "Sign Up"}
           </button>
@@ -115,19 +131,23 @@ function Signup() {
 
         <button
           onClick={handleGoogleSignup}
-          className="btn btn-google w-100 d-flex align-items-center justify-content-center fw-bold"
+          className="btn-google fw-bold"
+          style={{ marginBottom: "10px" }}
         >
           <img
             src="https://img.icons8.com/color/20/google-logo.png"
             alt="Google"
-            className="me-2"
+            style={{ marginRight: "8px" }}
           />
           Sign Up with Google
         </button>
 
         <p className="mt-3 text-center text-white-50">
           Already have an account?{" "}
-          <Link to="/login" className="text-decoration-none fw-bold text-warning">
+          <Link
+            to="/login"
+            className="text-decoration-none fw-bold text-warning"
+          >
             Login
           </Link>
         </p>
@@ -147,6 +167,8 @@ function Signup() {
           color: #fff;
           backdrop-filter: blur(8px);
           transition: all 0.3s ease;
+          width: 100%;
+          margin-bottom: 15px;
         }
 
         .glass-input:focus {
@@ -160,6 +182,8 @@ function Signup() {
           padding: 12px 0;
           background: linear-gradient(90deg, #ff8a00, #e52e71);
           font-weight: 600;
+          width: 100%;
+          color: #fff;
           transition: 0.3s;
         }
         .btn-gradient:hover {
@@ -173,10 +197,11 @@ function Signup() {
           background: rgba(255,255,255,0.2);
           color: #fff;
           padding: 10px 0;
-          transition: 0.3s;
+          width: 100%;
           display: flex;
           align-items: center;
           justify-content: center;
+          transition: 0.3s;
         }
         .btn-google:hover {
           background: rgba(255,255,255,0.35);
@@ -185,9 +210,8 @@ function Signup() {
         }
 
         .text-white-50 { color: rgba(255,255,255,0.7); }
+        .alert { border-radius: 10px; text-align: center; margin-bottom: 15px; }
       `}</style>
     </div>
   );
 }
-
-export default Signup;

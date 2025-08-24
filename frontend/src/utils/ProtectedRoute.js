@@ -1,19 +1,25 @@
-// ✅ src/utils/ProtectedRoute.js
+// src/utils/ProtectedRoute.js
+import React, { useState, useEffect } from "react";
+import { Navigate, useLocation } from "react-router-dom";
 
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { isLoggedIn } from './auth'; // Checks localStorage
+export default function ProtectedRoute({ children }) {
+  const [isChecking, setIsChecking] = useState(true);
+  const [token, setToken] = useState(null);
+  const location = useLocation();
 
-function ProtectedRoute({ children }) {
-  const urlToken = new URLSearchParams(window.location.search).get('token');
+  useEffect(() => {
+    const stored = localStorage.getItem("token");
+    setToken(stored);
+    setIsChecking(false);
+  }, []);
 
-  // 🔐 Allow access if logged in or token present in URL
-  if (isLoggedIn() || urlToken) {
-    return children;
+  if (isChecking) {
+    return <div className="text-center mt-5">⏳ Checking login...</div>;
   }
 
-  // 🚫 If not logged in, redirect to login page
-  return <Navigate to="/login" replace />;
-}
+  if (!token) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
 
-export default ProtectedRoute;
+  return children;
+}
