@@ -88,33 +88,101 @@ function Layout({ children, token, setToken }) {
   );
 }
 
-// ✅ Public Welcome Page
+// ✅ Enhanced Public Welcome Page with Highlights
 function Welcome() {
   return (
     <div
-      className="text-center"
       style={{
-        minHeight: "80vh",
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #667eea, #764ba2)",
         display: "flex",
-        flexDirection: "column",
         justifyContent: "center",
+        alignItems: "center",
+        padding: "20px",
+        fontFamily: "'Poppins', sans-serif",
       }}
     >
-      <h1 className="mb-4">💰 Welcome to Expense Tracker</h1>
-      <p className="mb-4 text-muted">
-        Track your expenses, visualize spending, and save smarter.
-      </p>
-      <div className="d-flex justify-content-center gap-3">
-        <Link to="/signup" className="btn btn-success btn-lg">
-          Sign Up
-        </Link>
-        <Link to="/login" className="btn btn-primary btn-lg">
-          Login
-        </Link>
+      <div
+        className="shadow-lg text-center p-5"
+        style={{
+          maxWidth: "700px",
+          width: "100%",
+          borderRadius: "25px",
+          backdropFilter: "blur(12px)",
+          background: "rgba(255,255,255,0.15)",
+          border: "1px solid rgba(255,255,255,0.3)",
+          color: "#fff",
+          animation: "fadeInUp 1s ease",
+        }}
+      >
+        <h1
+          className="fw-bold mb-3"
+          style={{ fontSize: "2.8rem", textShadow: "2px 2px 8px rgba(0,0,0,0.3)" }}
+        >
+          💰 Expense Tracker
+        </h1>
+        <p className="mb-4" style={{ color: "rgba(255,255,255,0.9)" }}>
+          Track your spending, stay on budget, and save smarter.
+        </p>
+
+        {/* ✅ Key Features */}
+        <div className="text-start mb-4" style={{ lineHeight: "1.8" }}>
+          <h5 className="fw-bold text-warning mb-3">✨ Why use Expense Tracker?</h5>
+          <ul style={{ listStyle: "none", paddingLeft: 0, fontSize: "1rem" }}>
+            <li>✅ Add and categorize your daily expenses</li>
+            <li>✅ Visualize spending trends on your dashboard</li>
+            <li>✅ Keep track of total and monthly budgets</li>
+            <li>✅ Secure login with Google authentication</li>
+            <li>✅ Access anytime, anywhere on any device</li>
+          </ul>
+        </div>
+
+        {/* ✅ Action Buttons */}
+        <div className="d-flex justify-content-center gap-3">
+          <Link
+            to="/signup"
+            className="btn px-4 py-2 fw-bold"
+            style={{
+              borderRadius: "12px",
+              background: "linear-gradient(90deg, #28a745, #20c997)",
+              color: "#fff",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+              transition: "0.3s",
+            }}
+            onMouseOver={(e) => (e.target.style.transform = "scale(1.05)")}
+            onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
+          >
+            🚀 Get Started
+          </Link>
+          <Link
+            to="/login"
+            className="btn px-4 py-2 fw-bold"
+            style={{
+              borderRadius: "12px",
+              background: "linear-gradient(90deg, #007bff, #00b4d8)",
+              color: "#fff",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+              transition: "0.3s",
+            }}
+            onMouseOver={(e) => (e.target.style.transform = "scale(1.05)")}
+            onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
+          >
+            🔑 Login
+          </Link>
+        </div>
       </div>
+
+      {/* Simple animation */}
+      <style>{`
+        @keyframes fadeInUp {
+          0% { opacity: 0; transform: translateY(20px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }
+
 
 // ✅ Main App
 export default function App() {
