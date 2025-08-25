@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
-export default function Signup() {
+export default function Signup({ setToken }) {   // ✅ accept setToken from App
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,8 +26,8 @@ export default function Signup() {
       // ✅ Save token
       localStorage.setItem("token", res.data.token);
 
-      // ✅ Broadcast auth change so Navbar/ProtectedRoute update instantly
-      window.dispatchEvent(new Event("storage"));
+      // ✅ Update React state so Navbar updates instantly
+      setToken(res.data.token);
 
       setMessage("✅ Signup successful!");
       navigate("/dashboard", { replace: true });

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-export default function Login() {
+export default function Login({ setToken }) {   // ✅ accept setToken from App
   const [form, setForm] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -38,8 +38,8 @@ export default function Login() {
         // ✅ Save token
         localStorage.setItem("token", data.token);
 
-        // ✅ Broadcast auth change so Navbar/ProtectedRoute update instantly
-        window.dispatchEvent(new Event("storage"));
+        // ✅ Update React state so Navbar re-renders
+        setToken(data.token);
 
         setMessage("✅ Login successful!");
         navigate("/dashboard", { replace: true });

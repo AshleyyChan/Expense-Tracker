@@ -22,7 +22,7 @@ function Navbar({ token, setToken }) {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    setToken(null); // update state
+    setToken("");
     navigate("/login");
   };
 
@@ -41,7 +41,7 @@ function Navbar({ token, setToken }) {
       }}
     >
       <Link
-        to="/"
+        to={token ? "/dashboard" : "/"}
         className="navbar-brand fw-bold fs-4 text-primary text-decoration-none"
       >
         💸 ExpenseTracker
@@ -118,11 +118,11 @@ function Welcome() {
 
 // ✅ Main App
 export default function App() {
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [token, setToken] = useState(() => localStorage.getItem("token") || "");
 
-  // 🔄 Sync with localStorage when token is set outside React (e.g., OAuthHandler)
+  // 🔄 Sync with localStorage when token changes outside React (e.g., OAuthHandler)
   useEffect(() => {
-    const syncToken = () => setToken(localStorage.getItem("token"));
+    const syncToken = () => setToken(localStorage.getItem("token") || "");
     window.addEventListener("storage", syncToken);
     return () => window.removeEventListener("storage", syncToken);
   }, []);
@@ -132,15 +132,18 @@ export default function App() {
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Welcome />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login setToken={setToken} />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/auth/callback" element={<OAuthHandler />} />
+        <Route
+          path="/auth/callback"
+          element={<OAuthHandler setToken={setToken} />}
+        />
 
         {/* Protected routes */}
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute token={token}>
               <Layout token={token} setToken={setToken}>
                 <Dashboard />
               </Layout>
@@ -150,7 +153,7 @@ export default function App() {
         <Route
           path="/add"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute token={token}>
               <Layout token={token} setToken={setToken}>
                 <AddExpense />
               </Layout>
@@ -160,7 +163,7 @@ export default function App() {
         <Route
           path="/list"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute token={token}>
               <Layout token={token} setToken={setToken}>
                 <ExpenseList />
               </Layout>

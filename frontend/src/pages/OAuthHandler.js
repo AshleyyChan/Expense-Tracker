@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function OAuthHandler() {
+function OAuthHandler({ setToken }) {   // ✅ accept setToken from App
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -9,18 +9,17 @@ function OAuthHandler() {
     const token = urlParams.get("token");
 
     if (token) {
-      // ✅ Save token to localStorage
+      // ✅ Save token
       localStorage.setItem("token", token);
 
-      // ✅ Let App.js know token changed (Navbar updates immediately)
-      window.dispatchEvent(new Event("storage"));
+      // ✅ Update React state so Navbar updates immediately
+      setToken(token);
 
-      // ✅ Redirect using React Router (no full reload)
       navigate("/dashboard", { replace: true });
     } else {
       navigate("/login", { replace: true });
     }
-  }, [navigate]);
+  }, [navigate, setToken]);
 
   return (
     <div className="text-center mt-5">
